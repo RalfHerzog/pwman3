@@ -28,7 +28,7 @@ public class Database {
 	/** Database folder */
 	private final String DATABASE_FOLDER = "pwman3"; 
 	/** Database file */
-	private final String DATABASE_NAME = "pwman3.db"; 
+	private final String DATABASE_NAME = "pwman.db"; 
 	
 	private final String DATABASE_STRUCTURE_FILE = "database_structure_0_4.xml";
 	
@@ -93,7 +93,7 @@ public class Database {
 	 * Executes an INSERT-Statement. The data is passed as {@link ContentValues}.
 	 * @param table - The table
 	 * @param contentValues - The columndata
-	 * @return long - insert id
+	 * @return long - insert id, -1 if error occoured
 	 */
 	public long insert( String table, ContentValues contentValues ) {
 		return sqliteDatabase.insert( table, null, contentValues );
@@ -229,6 +229,14 @@ public class Database {
 			}
 		}
 		return null;
+	}
+	
+	/**
+	 * Returns all tables
+	 * @return
+	 */
+	public ArrayList<SQLiteTable> getTables() {
+		return tables;
 	}
 	
 	/**

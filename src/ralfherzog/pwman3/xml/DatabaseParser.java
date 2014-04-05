@@ -123,6 +123,7 @@ public class DatabaseParser {
 		} catch (ClassNotFoundException e) {
 			
 			// Class not found, use the old method
+			// TODO: complete this
 			if ( tableName.equals( DatabaseConstants.DBVersion.table ) ) {
 				table = new SQLiteTableDbversion();
 			} else {

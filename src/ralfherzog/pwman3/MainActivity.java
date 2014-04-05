@@ -9,6 +9,8 @@ import android.view.Menu;
 public class MainActivity extends Activity {
 	
 	private static Context context;
+	private static boolean isRelease = false;
+	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +30,10 @@ public class MainActivity extends Activity {
 
 	public static Context getContext() {
 		return context;
+	}
+
+	public static boolean isRelease() {
+		return isRelease ;
 	}
 
 }

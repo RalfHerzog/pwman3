@@ -3,12 +3,14 @@ package ralfherzog.pwman3.database;
 import java.io.File;
 import java.util.ArrayList;
 
+import ralfherzog.pwman3.MainActivity;
 import ralfherzog.pwman3.database.sqlite.SQLiteSelect;
 import ralfherzog.pwman3.database.sqlite.column.SQLiteColumn;
 import ralfherzog.pwman3.database.sqlite.column.SQLiteColumnType;
 import ralfherzog.pwman3.database.sqlite.tables.SQLiteTable;
 import ralfherzog.pwman3.xml.DatabaseParser;
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
@@ -45,23 +47,29 @@ public class Database {
 	 * Singleton constructor
 	 */
 	private Database() {
-//		String externalStorageState = Environment.getExternalStorageState();
-		File dataDirectory = Environment.getExternalStorageDirectory();
-		
-		String pwmanDatabaseFolder = dataDirectory.getAbsolutePath() + File.separator + DATABASE_FOLDER + File.separator;
-		if ( !( new File( pwmanDatabaseFolder ).isDirectory() ) ) {
-			if ( !( new File( pwmanDatabaseFolder ).mkdirs() ) ) {
-				Log.e("pwmanDatabaseFolder", "mkdirs(): create " + pwmanDatabaseFolder + " failed");
+		if ( !MainActivity.isRelease() ) {
+			File dataDirectory = Environment.getExternalStorageDirectory();
+			
+			String pwmanDatabaseFolder = dataDirectory.getAbsolutePath() + File.separator + DATABASE_FOLDER + File.separator;
+			if ( !( new File( pwmanDatabaseFolder ).isDirectory() ) ) {
+				if ( !( new File( pwmanDatabaseFolder ).mkdirs() ) ) {
+					Log.e("pwmanDatabaseFolder", "mkdirs(): create " + pwmanDatabaseFolder + " failed");
+				}
 			}
+			pwmanFolderDatabase = pwmanDatabaseFolder + DATABASE_NAME;
+			
+			// Delete DB file for test purposes only
+//			new File( pwmanFolderDatabase ).delete();
 		}
-		pwmanFolderDatabase = pwmanDatabaseFolder + DATABASE_NAME;
 		
-		// Delete DB file for test purposes only
-//		new File( stupoFolderDatabase ).delete();
 	}
 	
 	private void init() {
-		sqliteDatabase = SQLiteDatabase.openOrCreateDatabase( pwmanFolderDatabase, null );
+		if ( !MainActivity.isRelease() ) {
+			sqliteDatabase = SQLiteDatabase.openOrCreateDatabase( pwmanFolderDatabase, null );
+		} else {
+			sqliteDatabase = MainActivity.getContext().openOrCreateDatabase( DATABASE_NAME, Context.MODE_PRIVATE, null );
+		}
 		
 		DatabaseParser databaseParser = new DatabaseParser( DATABASE_STRUCTURE_FILE );
 		tables = databaseParser.parse();

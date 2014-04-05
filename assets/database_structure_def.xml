@@ -1,0 +1,20 @@
+<xml version="1.0" encoding="UTF-8">
+	<tables>
+		<table name="String">
+			<columns>
+				<column name="String" type="(NULL|INTEGER|REAL|TEXT|BLOB)">
+					<isPrimaryKey>boolean</isPrimaryKey>
+					<isNull>boolean</isNull>
+					<isUnsigned>boolean</isUnsigned>
+					<comment>String</comment>
+					<options>
+						<option key="String">String</option>
+						<!-- ... more option nodes allowed here ... -->
+					</options>
+				</column>
+				<!-- ... more column nodes allowed here ... -->
+			</columns>
+		</table>
+		<!-- ... more table nodes allowed here ... -->
+	</tables>
+</xml>

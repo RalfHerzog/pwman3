@@ -1,0 +1,64 @@
+<xml version="1.0" encoding="UTF-8">
+	<tables>
+		<table name="NODES">
+			<columns>
+				<column name="ID" type="INTEGER">
+				    <isPrimaryKey>true</isPrimaryKey>
+				    <isAutoIncrement>true</isAutoIncrement>
+				</column>
+				<column name="DATA" type="BLOB">
+				    <isNull>false</isNull>
+				</column>
+			</columns>
+		</table>
+		
+		<table name="TAGS">
+			<columns>
+				<column name="ID" type="INTEGER">
+				    <isPrimaryKey>true</isPrimaryKey>
+				    <isAutoIncrement>true</isAutoIncrement>
+				</column>
+				<column name="DATA" type="BLOB">
+				    <isNull>false</isNull>
+				    <isUnique>true</isUnique>
+				</column>
+			</columns>
+		</table>
+		
+		<table name="LOOKUP">
+			<columns>
+				<column name="NODE" type="INTEGER">
+				    <isNull>false</isNull>
+				    <isPrimaryKey>true</isPrimaryKey>
+				</column>
+				<column name="TAG" type="INTEGER">
+				    <isNull>false</isNull>
+				    <isUnique>true</isUnique>
+				</column>
+			</columns>
+		</table>
+		
+		<table name="KEY">
+			<columns>
+				<column name="THEKEY" type="TEXT">
+				    <isNull>false</isNull>
+				    <isPrimaryKey>true</isPrimaryKey>
+				</column>
+				<column name="TAG" type="INTEGER">
+				    <isNull>false</isNull>
+				    <default></default>
+				</column>
+			</columns>
+		</table>
+		
+		<table name="DBVERSION">
+			<columns>
+				<column name="DBVERSION" type="TEXT">
+				    <isNull>false</isNull>
+				    <default>0.4</default>
+				</column>
+			</columns>
+		</table>
+		
+	</tables>
+</xml>

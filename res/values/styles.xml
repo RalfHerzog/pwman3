@@ -19,12 +19,20 @@
     
     <style name="DefaultTextStyle" parent="@android:style/TextAppearance.Medium">
         <item name="android:textColor">#FFFFFF</item>
+        <item name="android:paddingLeft">15dp</item>
+        <item name="android:paddingRight">15dp</item>
+    </style>
+    
+    <style name="DefaultEditTextStyle" parent="@android:style/TextAppearance.Medium">
     </style>
     
     <style name="DefaultButtonStyle">
+        <item name="android:background">#555555</item>
         <item name="android:textColor">#FFFFFF</item>
         <item name="android:textStyle">bold</item>
+        <item name="android:paddingTop">10dp</item>
         <item name="android:paddingLeft">20dp</item>
+        <item name="android:paddingBottom">10dp</item>
         <item name="android:paddingRight">20dp</item>
     </style>
 

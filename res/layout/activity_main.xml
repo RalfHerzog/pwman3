@@ -10,24 +10,37 @@
     tools:context=".MainActivity" >
 
     <TextView
-        android:id="@+id/main_text_database_not_found"
         style="@style/DefaultTextStyle"
+        android:id="@+id/main_text_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
-        android:text="@string/main_text_database_not_found"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <Button
-        android:id="@+id/main_button_database_create"
         style="@style/DefaultButtonStyle"
+        android:visibility="gone"
+        android:onClick="onButtonClickCreate"
+        android:id="@+id/main_button_database_create"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/main_text_database_not_found"
+        android:layout_below="@id/main_text_title"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="40dp"
-        android:text="@string/main_button_database_create_new" />
+        android:text="@string/main_button_database_create" />
+    
+    <Button
+        style="@style/DefaultButtonStyle"
+        android:visibility="gone"
+        android:onClick="onButtonClickDelete"
+        android:id="@+id/main_button_database_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/main_text_title"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        android:text="@string/main_button_database_delete" />
 
 </RelativeLayout>

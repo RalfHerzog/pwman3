@@ -142,7 +142,10 @@ public class MainActivity extends Activity {
 				String password2 = textViewPassword2.getText().toString();
 				
 				// TODO: Add more password restrictions here
-				if ( password1.equals( password2 ) ) {
+				if ( 
+					password1.length() > 0 && password2.length() > 0 
+					&& password1.equals( password2 )
+				) {
 					dialog.getButton( AlertDialog.BUTTON_NEGATIVE ).setEnabled( true );
 				} else {
 					dialog.getButton( AlertDialog.BUTTON_NEGATIVE ).setEnabled( false );

@@ -7,8 +7,8 @@
     <string name="main_text_database_not_setup">Database not setup. Please create a new one</string>
     <string name="main_text_database_ready">Database is ready to use</string>
     
-    <string name="main_button_database_create">Create new</string>
-    <string name="main_button_database_delete">Delete database</string>
+    <string name="main_button_database_create">Create new database key</string>
+    <string name="main_button_database_delete">Delete database key</string>
     
     <string name="main_dialog_create_text_title">Please enter a hard to crack password for the database</string>
     <string name="main_dialog_create_password_hint_1">Password</string>
@@ -16,6 +16,5 @@
     
     <string name="cancel">Cancel</string>
     <string name="create">Create</string>
-    
 
 </resources>

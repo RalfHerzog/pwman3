@@ -301,9 +301,10 @@ public class Cipher {
 	 * Setup a new fresh database with new key
 	 * @param password
 	 * @param algorithmName
+	 * @return boolean
 	 * @throws NoSuchAlgorithmException 
 	 */
-	public void setup( String password, String algorithmName ) throws NoSuchAlgorithmException {
+	public boolean setup( String password, String algorithmName ) throws NoSuchAlgorithmException {
 		
 		Algorithm algorithm = getAlgorithmByName( algorithmName );
 		if ( algorithm == null ) {
@@ -338,6 +339,7 @@ public class Cipher {
 			this.algorithm = algorithm;
 			this.databaseKey = encryptedKey;
 		}
+		return insertSuccess;
 	}
 	
 	/**

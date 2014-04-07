@@ -14,6 +14,10 @@ public class SQLiteTableKey extends SQLiteTable {
 		super( DatabaseConstants.Key.table );
 	}
 
+	public boolean hasCryptedKey() {
+		return getKeyCrypted() != null;
+	}
+	
 	public byte[] getKeyCrypted() {
 		SQLiteSelect sqLiteSelect = new SQLiteSelect();
 		sqLiteSelect.table = DatabaseConstants.Key.table;

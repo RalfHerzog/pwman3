@@ -19,28 +19,57 @@
         android:layout_marginTop="30dp"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
-    <Button
-        style="@style/DefaultButtonStyle"
-        android:visibility="gone"
-        android:onClick="onButtonClickCreate"
-        android:id="@+id/main_button_database_create"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <RelativeLayout
+        android:id="@+id/main_view_create"
         android:layout_below="@id/main_text_title"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="40dp"
-        android:text="@string/main_button_database_create" />
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+	    android:layout_marginTop="40dp"
+        android:orientation="vertical"
+        android:visibility="visible" >
+        
+	    <Button
+	        style="@style/DefaultButtonStyle"
+	        android:onClick="onButtonClickCreate"
+	        android:id="@+id/main_button_database_create"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_centerHorizontal="true"
+	        android:text="@string/main_button_database_create" />
+	    
+	</RelativeLayout>
     
-    <Button
-        style="@style/DefaultButtonStyle"
-        android:visibility="gone"
-        android:onClick="onButtonClickDelete"
-        android:id="@+id/main_button_database_delete"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <RelativeLayout 
+        android:id="@+id/main_view_unlock"
         android:layout_below="@id/main_text_title"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="40dp"
-        android:text="@string/main_button_database_delete" />
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+	    android:layout_marginTop="20dp"
+        android:orientation="vertical"
+        android:visibility="visible" >
+        
+        <EditText
+	        style="@style/DefaultEditTextStyle"
+	        android:id="@+id/main_unlock_password"
+	        android:layout_width="300dp"
+	        android:layout_height="wrap_content"
+	        android:layout_centerHorizontal="true"
+	        android:ems="8"
+	        android:hint="@string/main_dialog_create_password_hint_1"
+	        android:inputType="textPassword" />
+        
+        <Button
+	        style="@style/DefaultButtonStyle"
+	        android:id="@+id/main_button_database_unlock"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_centerHorizontal="true"
+	        android:layout_marginTop="20dp"
+	        android:layout_below="@id/main_unlock_password"
+	        android:layout_alignRight="@id/main_unlock_password"
+	        android:onClick="onButtonClickUnlock"
+	        android:text="@string/main_button_database_unlock" />
+        
+    </RelativeLayout>
 
 </RelativeLayout>

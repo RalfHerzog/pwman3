@@ -12,7 +12,6 @@ import ralfherzog.pwman3.database.DatabaseConstants;
 import ralfherzog.pwman3.database.sqlite.tables.SQLiteTableNodes;
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.View;
 import android.widget.ListView;
 
 public class PasswordListActivity extends PwmanActivity {
@@ -45,8 +44,4 @@ public class PasswordListActivity extends PwmanActivity {
 		return true;
 	}
 	
-	public void onClickImageCopyPaste( View view ) {
-		
-	}
-
 }

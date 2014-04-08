@@ -3,7 +3,7 @@ package ralfherzog.pwman3.database;
 import java.io.File;
 import java.util.ArrayList;
 
-import ralfherzog.pwman3.MainActivity;
+import ralfherzog.pwman3.activities.main.MainActivity;
 import ralfherzog.pwman3.database.sqlite.SQLiteSelect;
 import ralfherzog.pwman3.database.sqlite.column.SQLiteColumn;
 import ralfherzog.pwman3.database.sqlite.column.SQLiteColumnType;
@@ -36,9 +36,6 @@ public class Database {
 	private static Database databaseObject; 
 	/** The database connection */
 	private SQLiteDatabase sqliteDatabase = null; 
-	
-	/** Working version */
-	private final String DB_VERSION = "0.4";
 	
 	private ArrayList<SQLiteTable> tables;
 	private String pwmanFolderDatabase;

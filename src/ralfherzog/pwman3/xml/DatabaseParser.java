@@ -8,7 +8,7 @@ import java.util.Locale;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-import ralfherzog.pwman3.MainActivity;
+import ralfherzog.pwman3.activities.main.MainActivity;
 import ralfherzog.pwman3.database.DatabaseConstants;
 import ralfherzog.pwman3.database.sqlite.column.SQLiteColumn;
 import ralfherzog.pwman3.database.sqlite.tables.SQLiteTable;

@@ -1,4 +1,4 @@
-package ralfherzog.pwman3;
+package ralfherzog.pwman3.activities;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;

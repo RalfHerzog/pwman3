@@ -1,8 +1,11 @@
-package ralfherzog.pwman3;
+package ralfherzog.pwman3.activities.main;
 
 import java.io.FileNotFoundException;
 import java.security.NoSuchAlgorithmException;
 
+import ralfherzog.pwman3.R;
+import ralfherzog.pwman3.activities.PwmanActivity;
+import ralfherzog.pwman3.activities.passwordlist.PasswordListActivity;
 import ralfherzog.pwman3.cipher.Cipher;
 import ralfherzog.pwman3.cipher.KeyNotFoundException;
 import ralfherzog.pwman3.database.Database;
@@ -27,7 +30,7 @@ public class MainActivity extends PwmanActivity {
 	private static boolean isRelease = false;
 	
 	private final String algorithm = "AES";
-	private Cipher cipher;
+	private static Cipher cipher;
 	
 	private View viewUnlock;
 	private View viewCreate;
@@ -199,6 +202,10 @@ public class MainActivity extends PwmanActivity {
 		return success;
 	}
 	
+	public static Cipher getCipher() {
+		return cipher;
+	}
+
 	public static Context getContext() {
 		return context;
 	}

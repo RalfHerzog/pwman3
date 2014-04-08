@@ -21,6 +21,13 @@ public class PasswordListActivity extends PwmanActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		if ( !hasAccess() ) {
+			setResult( RESULT_CANCELED );
+			finish();
+			return;
+		}
+		
 		setContentView( R.layout.activity_password_list );
 		
 		ListView passwordListView = (ListView) findViewById( R.id.password_list_list );
@@ -42,6 +49,12 @@ public class PasswordListActivity extends PwmanActivity {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
+	}
+	
+	@Override
+	protected void onDestroy() {
+		setResult( RESULT_OK );
+		super.onDestroy();
 	}
 	
 }

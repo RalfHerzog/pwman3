@@ -5,11 +5,20 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.os.Build;
+import android.os.Bundle;
 import android.view.View;
 
 public class PwmanActivity extends Activity {
 	
 	private static long lastFocusTimestamp = 0;
+	private static final long DATABASE_UNLOCKED_TIMEOUT = 3;
+	
+	private static boolean hasAccess = false;
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+	}
 	
 	/**
 	 * Shows the progress UI and hides the friend list form.
@@ -37,17 +46,33 @@ public class PwmanActivity extends Activity {
 	}
 	
 	@Override
+	protected void onResume() {
+		onWindowFocusChanged( true );
+		super.onResume();
+	}
+	
+	@Override
 	public void onWindowFocusChanged( boolean hasFocus ) {
 		if ( !hasFocus ) {
-			setLastFocusTimestamp((long)System.currentTimeMillis() / 1000);
+			// Activity looses focus
+			lastFocusTimestamp = getTimestamp();
+		} else {
+			// Activity gains focus
+			if ( getTimestamp() > lastFocusTimestamp + DATABASE_UNLOCKED_TIMEOUT ) {
+			} else {
+			}
 		}
 	}
-
-	public static long getLastFocusTimestamp() {
-		return lastFocusTimestamp;
+	
+	protected boolean hasAccess() {
+		return hasAccess;
 	}
-	public static void setLastFocusTimestamp(long lastFocusTimestamp) {
-		PwmanActivity.lastFocusTimestamp = lastFocusTimestamp;
+	
+	protected void setHasAccess( boolean hasAccess ) {
+		PwmanActivity.hasAccess = hasAccess;
 	}
-
+	
+	protected long getTimestamp() {
+		return (long)System.currentTimeMillis() / 1000;
+	}
 }

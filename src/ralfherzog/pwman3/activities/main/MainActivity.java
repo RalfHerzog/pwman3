@@ -38,8 +38,6 @@ public class MainActivity extends PwmanActivity {
 	
 	private SQLiteTableKey tableKey;
 	
-	private static boolean databaseUnlocked = false;
-	
 	private final int INTENT_FRIEND_LIST = 0x00; 
 	
 	@Override
@@ -54,10 +52,12 @@ public class MainActivity extends PwmanActivity {
 		
 		tableKey = (SQLiteTableKey)Database.getInstance().getSQLiteTableByName( DatabaseConstants.Key.table );
 		
-		cipher = new Cipher( tableKey );
+		if ( cipher == null ) {
+			cipher = new Cipher( tableKey );
+		}
 		
 		if ( tableKey.hasCryptedKey() ) {
-			if ( databaseUnlocked ) {
+			if ( hasAccess() ) {
 				// TODO: switch to password list activity
 				Intent passwordListIntent = new Intent( this, PasswordListActivity.class );
 				startActivityForResult( passwordListIntent, INTENT_FRIEND_LIST );
@@ -108,8 +108,7 @@ public class MainActivity extends PwmanActivity {
 			editPassword.setError( getString( R.string.main_text_password_wrong ) );
 			return;
 		}
-		// TODO: switch to password list activity
-		databaseUnlocked = true;
+		setHasAccess( true );
 		
 		Intent passwordListIntent = new Intent( this, PasswordListActivity.class );
 		startActivityForResult( passwordListIntent, INTENT_FRIEND_LIST );
@@ -192,7 +191,12 @@ public class MainActivity extends PwmanActivity {
 	@Override
 	protected void onActivityResult ( int requestCode, int resultCode, Intent data ) {
 		if ( requestCode == INTENT_FRIEND_LIST ) {
-			finish();
+			if ( resultCode == RESULT_CANCELED && hasAccess() ) {
+				finish();
+			} else {
+				showView( viewCreate, false );
+				showView( viewUnlock, true );
+			}
 		}
 	}
 	

@@ -9,6 +9,8 @@ import android.view.View;
 
 public class PwmanActivity extends Activity {
 	
+	private static long lastFocusTimestamp = 0;
+	
 	/**
 	 * Shows the progress UI and hides the friend list form.
 	 */
@@ -32,6 +34,20 @@ public class PwmanActivity extends Activity {
 			// and hide the relevant UI components.
 			view.setVisibility( show ? View.VISIBLE : View.GONE );
 		}
+	}
+	
+	@Override
+	public void onWindowFocusChanged( boolean hasFocus ) {
+		if ( !hasFocus ) {
+			setLastFocusTimestamp((long)System.currentTimeMillis() / 1000);
+		}
+	}
+
+	public static long getLastFocusTimestamp() {
+		return lastFocusTimestamp;
+	}
+	public static void setLastFocusTimestamp(long lastFocusTimestamp) {
+		PwmanActivity.lastFocusTimestamp = lastFocusTimestamp;
 	}
 
 }

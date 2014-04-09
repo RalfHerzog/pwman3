@@ -21,8 +21,8 @@ public class SQLiteTableNodes extends SQLiteTable {
 		for ( ContentValues contentValues : selectResults ) {
 			String databaseRow = new String( contentValues.getAsByteArray( DatabaseConstants.Nodes.columnData ) );
 			
-			PWManContentNode node = new PWManContentNode();
-			node.parseNodeDatabaseRow( cipher, databaseRow );
+			PWManContentNode node = new PWManContentNode( cipher );
+			node.parseNodeDatabaseRow( databaseRow );
 			nodes.add( node );
 		}
 		return nodes;

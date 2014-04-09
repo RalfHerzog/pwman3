@@ -31,8 +31,11 @@ public class PWManContentNode {
 	private final String NODE_TAGS 		= "tags:";
 	private final String NODE_TAG 		= "tag:";
 	private final String NODE_TAG_END 	= "**endtag**";
+
+	private Cipher cipher;
 	
-	public PWManContentNode() {
+	public PWManContentNode( Cipher cipher ) {
+		this.cipher = cipher;
 	}
 	
 	/**
@@ -41,7 +44,7 @@ public class PWManContentNode {
 	 * @param databaseRow - String
 	 * @return boolean
 	 */
-	public boolean parseNodeDatabaseRow( Cipher cipher, String databaseRow ) {
+	public boolean parseNodeDatabaseRow( String databaseRow ) {
 		
 		this.databaseRowOriginal = databaseRow;
 		
@@ -52,7 +55,7 @@ public class PWManContentNode {
 		
 		this.tags = parseNodeTags( databaseRow );
 		
-		return decrypt( cipher );
+		return decrypt();
 	}
 
 	/**
@@ -118,7 +121,7 @@ public class PWManContentNode {
 	 * Decrypt the data stored in this object
 	 * @return boolean - always true
 	 */
-	public boolean decrypt( Cipher cipher ) {
+	public boolean decrypt() {
 		byte[] data = null;
 		
 		// Username
@@ -180,17 +183,17 @@ public class PWManContentNode {
 	 * Generates the database data row which could be saved. This is the opposite of parseNodeDatabaseRow().
 	 * @return String - encrypted database row
 	 */
-	public String generateDatabaseString( Cipher cipher ) {
+	public String generateDatabaseString() {
 		String databaseRow = "";
 		
-		databaseRow += NODE_USERNAME + encryptData( cipher, getUserName() ) + NODE_DATA_SEPARATOR;
-		databaseRow += NODE_PASSWORD + encryptData( cipher, getPassword() ) + NODE_DATA_SEPARATOR;
-		databaseRow += NODE_URL + encryptData( cipher, getUrl() ) + NODE_DATA_SEPARATOR;
-		databaseRow += NODE_NOTES + encryptData( cipher, getNotes() ) + NODE_DATA_SEPARATOR;
+		databaseRow += NODE_USERNAME + encryptData( getUserName() ) + NODE_DATA_SEPARATOR;
+		databaseRow += NODE_PASSWORD + encryptData( getPassword() ) + NODE_DATA_SEPARATOR;
+		databaseRow += NODE_URL + encryptData( getUrl() ) + NODE_DATA_SEPARATOR;
+		databaseRow += NODE_NOTES + encryptData( getNotes() ) + NODE_DATA_SEPARATOR;
 		
 		databaseRow += NODE_TAGS;
 		for ( String tag : getTags() ) {
-			databaseRow += NODE_TAG + encryptData( cipher, tag ) + "\n" + NODE_TAG_END;
+			databaseRow += NODE_TAG + encryptData( tag ) + "\n" + NODE_TAG_END;
 		}
 		
 		return databaseRow;
@@ -202,7 +205,7 @@ public class PWManContentNode {
 	 * @param plaintext
 	 * @return String - encrypted
 	 */
-	private String encryptData( Cipher cipher, String plaintext ) {
+	private String encryptData( String plaintext ) {
 		if ( plaintext == null ) {
 			plaintext = "";
 		}

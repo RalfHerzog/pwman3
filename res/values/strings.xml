@@ -4,17 +4,22 @@
     <string name="app_name">pwman3</string>
     <string name="action_settings">Settings</string>
     
-    <string name="main_text_database_create">Database not setup. Please create a new one</string>
-    <string name="main_text_database_unlock">Please enter the password to unlock the database</string>
     
     <string name="main_text_password_restriction">Password too short</string>
     <string name="main_text_password_wrong">Wrong password</string>
     
     <string name="main_button_database_create">Create new database key</string>
-    <string name="main_button_database_unlock">Unlock</string>
+    
+    <string name="main_dialog_startup_text">The database file was not found.\nDo you want to browse for a file or create an empty database?</string>
+    <string name="main_dialog_startup_button_create">Create new</string>
+    <string name="main_dialog_startup_button_browse">Browse for file</string>
+    
+    <string name="main_dialog_request_password_text">Please enter the password to unlock the database</string>
+    <string name="main_dialog_request_password_text_retry_failure">Password failed.\nPlease enter the correct password to unlock the database</string>
+    <string name="main_dialog_request_button_unlock">Unlock</string> 
     
     <string name="main_dialog_create_text_title">Please enter a hard to crack password for the database</string>
-    <string name="main_dialog_create_password_hint_1">Password</string>
+    <string name="main_dialog_create_password_hint">Password</string>
     <string name="main_dialog_create_password_hint_2">Repeat Password</string>
     
     <string name="cancel">Cancel</string>

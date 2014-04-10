@@ -28,7 +28,10 @@ public class Database {
 	/** Database folder */
 	private final String DATABASE_FOLDER = "pwman3"; 
 	/** Database file */
-	private final String DATABASE_NAME = "pwman.db"; 
+	private final String DATABASE_NAME = "pwman.db";
+	
+	/** Database filename suffix */
+	public static final String DATABASE_FILE_EXTENSION = "db";
 	
 	private final String DATABASE_STRUCTURE_FILE = "database_structure_0_4.xml";
 	
@@ -38,7 +41,7 @@ public class Database {
 	private SQLiteDatabase sqliteDatabase = null; 
 	
 	private ArrayList<SQLiteTable> tables;
-	private String pwmanFolderDatabase;
+	private String pwmanFolderDatabaseFile;
 	
 	/**
 	 * Singleton constructor
@@ -53,17 +56,16 @@ public class Database {
 					Log.e("pwmanDatabaseFolder", "mkdirs(): create " + pwmanDatabaseFolder + " failed");
 				}
 			}
-			pwmanFolderDatabase = pwmanDatabaseFolder + DATABASE_NAME;
-			
-			// Delete DB file for test purposes only
-//			new File( pwmanFolderDatabase ).delete();
+			pwmanFolderDatabaseFile = pwmanDatabaseFolder + DATABASE_NAME;
+		} else {
+			pwmanFolderDatabaseFile = DATABASE_NAME;
 		}
 		
 	}
 	
-	private void init() {
+	public void init() {
 		if ( !MainActivity.isRelease() ) {
-			sqliteDatabase = SQLiteDatabase.openOrCreateDatabase( pwmanFolderDatabase, null );
+			sqliteDatabase = SQLiteDatabase.openOrCreateDatabase( pwmanFolderDatabaseFile, null );
 		} else {
 			sqliteDatabase = MainActivity.getContext().openOrCreateDatabase( DATABASE_NAME, Context.MODE_PRIVATE, null );
 		}
@@ -199,6 +201,10 @@ public class Database {
 		return dataRows;
 	}
 	
+	public String getPwmanFolderDatabaseFile() {
+		return pwmanFolderDatabaseFile;
+	}
+
 	/**
 	 * Returns a table to given name
 	 * @param name  String
@@ -244,7 +250,6 @@ public class Database {
 	public static Database getInstance() {
 		if ( databaseObject == null ) {
 			databaseObject = new Database();
-			databaseObject.init();
 		}
 		return databaseObject;
 	}
@@ -258,5 +263,9 @@ public class Database {
 		} catch ( IllegalStateException e ) {
 			e.printStackTrace();
 		}
+	}
+
+	public boolean isDatabasePresent() {
+		return new File( pwmanFolderDatabaseFile ).isFile();
 	}
 }

@@ -1,5 +1,9 @@
 package ralfherzog.pwman3.activities;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
@@ -13,7 +17,7 @@ public class PwmanActivity extends Activity {
 	private static long lastFocusTimestamp = 0;
 	private static final long DATABASE_UNLOCKED_TIMEOUT = 3;
 	
-	private static boolean hasAccess = false;
+	private static boolean databaseUnlocked = false;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +49,20 @@ public class PwmanActivity extends Activity {
 		}
 	}
 	
+	public boolean checkPasswordRestriction( String password ) {
+		boolean success = true;
+		success &= password.length() >= 4;
+		return success;
+	}
+	
+	protected void copyFile( InputStream in, OutputStream out ) throws IOException {
+		byte[] buffer = new byte[ 1024 ];
+		int read;
+		while( ( read = in.read( buffer ) ) != -1 ){
+			out.write(buffer, 0, read);
+		}
+	}
+	
 	@Override
 	protected void onResume() {
 		onWindowFocusChanged( true );
@@ -64,12 +82,12 @@ public class PwmanActivity extends Activity {
 		}
 	}
 	
-	protected boolean hasAccess() {
-		return hasAccess;
+	protected boolean isDatabaseUnlocked() {
+		return databaseUnlocked;
 	}
 	
-	protected void setHasAccess( boolean hasAccess ) {
-		PwmanActivity.hasAccess = hasAccess;
+	protected void setDatabaseUnlocked( boolean unlocked ) {
+		PwmanActivity.databaseUnlocked = unlocked;
 	}
 	
 	protected long getTimestamp() {

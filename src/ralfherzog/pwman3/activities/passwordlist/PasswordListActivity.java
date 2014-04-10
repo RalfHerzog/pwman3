@@ -22,7 +22,7 @@ public class PasswordListActivity extends PwmanActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		if ( !hasAccess() ) {
+		if ( !isDatabaseUnlocked() || !Database.getInstance().isDatabasePresent() ) {
 			setResult( RESULT_CANCELED );
 			finish();
 			return;

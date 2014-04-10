@@ -1,6 +1,9 @@
 package ralfherzog.pwman3.activities.main;
 
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 
 import ralfherzog.pwman3.R;
@@ -11,18 +14,14 @@ import ralfherzog.pwman3.cipher.KeyNotFoundException;
 import ralfherzog.pwman3.database.Database;
 import ralfherzog.pwman3.database.DatabaseConstants;
 import ralfherzog.pwman3.database.sqlite.tables.SQLiteTableKey;
-import android.os.Bundle;
-import android.app.AlertDialog;
+import ralfherzog.pwman3.filedialog.FileDialog;
+import ralfherzog.pwman3.filedialog.FileDialogSelectionMode;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.LayoutInflater;
+import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 
 public class MainActivity extends PwmanActivity {
 	
@@ -32,13 +31,8 @@ public class MainActivity extends PwmanActivity {
 	private final String algorithm = "AES";
 	private static Cipher cipher;
 	
-	private View viewUnlock;
-	private View viewCreate;
-	private TextView textTitle;
-	
-	private SQLiteTableKey tableKey;
-	
-	private final int INTENT_FRIEND_LIST = 0x00; 
+	private final int INTENT_PASSWORD_LIST = 0x00; 
+	private final int INTENT_BROWSE_FILE = 0x01; 
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -46,164 +40,93 @@ public class MainActivity extends PwmanActivity {
 		setContentView( R.layout.activity_main );
 		context = getApplicationContext();
 		
-		viewUnlock = (View)findViewById( R.id.main_view_unlock );
-		viewCreate = (View)findViewById( R.id.main_view_create );
-		textTitle = (TextView)findViewById( R.id.main_text_title );
+//		new File( Database.getInstance().getPwmanFolderDatabaseFile() ).delete();
 		
-		tableKey = (SQLiteTableKey)Database.getInstance().getSQLiteTableByName( DatabaseConstants.Key.table );
-		
-		if ( cipher == null ) {
-			cipher = new Cipher( tableKey );
-		}
-		
-		if ( tableKey.hasCryptedKey() ) {
-			if ( hasAccess() ) {
-				// TODO: switch to password list activity
-				Intent passwordListIntent = new Intent( this, PasswordListActivity.class );
-				startActivityForResult( passwordListIntent, INTENT_FRIEND_LIST );
-			} else {
-				textTitle.setText( getText( R.string.main_text_database_unlock ) );
-				
-				showView( viewCreate, false );
-				showView( viewUnlock, true );
-			}
+		if ( !Database.getInstance().isDatabasePresent() ) {
+			// Database not present
+			// Show choice dialog
+			showDialogSetup();
 		} else {
-			textTitle.setText( getText( R.string.main_text_database_create ) );
 			
-			showView( viewUnlock, false );
-			showView( viewCreate, true );
+			if ( isDatabaseUnlocked() ) {
+				Intent passwordListIntent = new Intent( context, PasswordListActivity.class );
+				startActivityForResult( passwordListIntent, INTENT_PASSWORD_LIST );
+			} else {
+				// Database file is present, init
+				Database.getInstance().init();
+				showDialogRequestPassword( false );
+			}
 		}
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
+		getMenuInflater().inflate( R.menu.main, menu );
 		return true;
 	}
 	
-	public void onButtonClickUnlock( View buttonView ) {
+	private void loadDatabase() {
+		Database.getInstance().init();
+		SQLiteTableKey tableKey = (SQLiteTableKey)Database.getInstance().getSQLiteTableByName( DatabaseConstants.Key.table );
 		
-		EditText editPassword = (EditText) findViewById( R.id.main_unlock_password );
-		String passwordString = editPassword.getText().toString();
-		
-		if ( !checkPasswordRestriction( passwordString ) ) {
-			// TODO: Show error due to password restriction
-			editPassword.setError( getString( R.string.main_text_password_restriction ) );
-			return;
+		if ( cipher == null ) {
+			cipher = new Cipher( tableKey );
 		}
-		
-		boolean passwordCorrect = false;
-		try {
-			passwordCorrect = cipher.load( passwordString, algorithm );
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		} catch (KeyNotFoundException e) {
-			e.printStackTrace();
-		}
-		
-		if ( !passwordCorrect ) {
-			editPassword.setError( getString( R.string.main_text_password_wrong ) );
-			return;
-		}
-		setHasAccess( true );
-		
-		Intent passwordListIntent = new Intent( this, PasswordListActivity.class );
-		startActivityForResult( passwordListIntent, INTENT_FRIEND_LIST );
 	}
 	
-	public void onButtonClickCreate( View buttonView ) {
-		final LayoutInflater inflater = getLayoutInflater();
-		
-		final View dialogView = inflater.inflate( R.layout.activity_main_dialog_create, null );
-		
-		AlertDialog.Builder builder = new AlertDialog.Builder( this );
-		builder
-			.setView( dialogView )
-			.setPositiveButton( R.string.cancel, null )
-			.setNegativeButton( R.string.create, new DialogInterface.OnClickListener() {
-				@Override
-				public void onClick( DialogInterface dialog, int which ) {
-					
-					TextView textViewPassword1 = (TextView) dialogView.findViewById( R.id.main_dialog_create_password_1 );
-					String userPassword = textViewPassword1.getText().toString();
-					
-					boolean success = false;
-					try {
-						success = cipher.setup( userPassword, algorithm );
-					} catch (NoSuchAlgorithmException e) {
-						e.printStackTrace();
-					}
-					
-					if ( success ) {
-						// TODO: Switch to password list activity
-					} else {
-						// TODO: Show error
-					}
-				}
-			})
-		;
-		
-		AlertDialog dialog = builder.create();
-		dialog.show();
-		
-		dialog.getButton( AlertDialog.BUTTON_NEGATIVE ).setEnabled( false );
-		
-		TextView textViewPassword1 = (TextView)dialog.findViewById( R.id.main_dialog_create_password_1 );
-		TextView textViewPassword2 = (TextView)dialog.findViewById( R.id.main_dialog_create_password_2 );
-		
-		textViewPassword1.addTextChangedListener( getDialogCreatePasswordTextWatcher( dialog ) );
-		textViewPassword2.addTextChangedListener( getDialogCreatePasswordTextWatcher( dialog ) );
+	public void showDialogSetup() {
+		MainActivityDialogSetup activityDialogSetup = new MainActivityDialogSetup( this );
+		activityDialogSetup.show();
 	}
 	
-	private TextWatcher getDialogCreatePasswordTextWatcher( final AlertDialog dialog ) {
-		return new TextWatcher() {
-			@Override
-			public void onTextChanged( CharSequence s, int start, int before, int count ) {
-				
-				TextView textViewPassword1 = (TextView)dialog.findViewById( R.id.main_dialog_create_password_1 );
-				TextView textViewPassword2 = (TextView)dialog.findViewById( R.id.main_dialog_create_password_2 );
-				
-				String password1 = textViewPassword1.getText().toString();
-				String password2 = textViewPassword2.getText().toString();
-				
-				// TODO: Add more password restrictions here
-				if ( 
-					checkPasswordRestriction( password1 ) && checkPasswordRestriction( password2 )
-					&& password1.equals( password2 )
-				) {
-					dialog.getButton( AlertDialog.BUTTON_NEGATIVE ).setEnabled( true );
-				} else {
-					dialog.getButton( AlertDialog.BUTTON_NEGATIVE ).setEnabled( false );
-				}
-			}
-			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-			}
-			@Override
-			public void afterTextChanged(Editable s) {
-			}
-		};
+	private void showDialogRequestPassword( boolean retry ) {
+		MainActivityDialogRequestPassword activityDialogRequestPassword = new MainActivityDialogRequestPassword( this, retry );
+		activityDialogRequestPassword.show();
+	}
+	
+	private void showDialogSetupPassword() {
+		MainActivityDialogSetupPasswordRequest activityDialogPasswordRequest = new MainActivityDialogSetupPasswordRequest( this );
+		activityDialogPasswordRequest.show();
 	}
 	
 	@Override
 	protected void onActivityResult ( int requestCode, int resultCode, Intent data ) {
-		if ( requestCode == INTENT_FRIEND_LIST ) {
-			if ( resultCode == RESULT_CANCELED && hasAccess() ) {
+		if ( requestCode == INTENT_PASSWORD_LIST ) {
+			if ( resultCode == RESULT_CANCELED ) {
 				finish();
 			} else {
-				showView( viewCreate, false );
-				showView( viewUnlock, true );
+				// TODO: 
 			}
 		}
-	}
-	
-	private boolean checkPasswordRestriction( String password ) {
-		boolean success = true;
-		success &= password.length() >= 4;
-		return success;
+		
+		if ( requestCode == INTENT_BROWSE_FILE ) {
+			if ( resultCode == RESULT_OK ) {
+				String sourceFile = data.getStringExtra( FileDialog.RESULT_PATH );
+				String destinationFile = Database.getInstance().getPwmanFolderDatabaseFile();
+				
+				boolean copyResult = true;
+				try {
+					copyFile( new FileInputStream( sourceFile ), new FileOutputStream( destinationFile ) );
+				} catch (FileNotFoundException e) {
+					// Should never happen
+					copyResult = false;
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO: Show file copy error
+					copyResult = false;
+					e.printStackTrace();
+				}
+				
+				if ( copyResult ) {
+					showDialogRequestPassword( false );
+				}
+			} else {
+				showDialogSetup();
+			}
+		} else {
+			// TODO: User aborted file browser
+		}
 	}
 	
 	public static Cipher getCipher() {
@@ -216,6 +139,82 @@ public class MainActivity extends PwmanActivity {
 
 	public static boolean isRelease() {
 		return isRelease;
+	}
+
+	public void dialogSetupPasswordOnButtonClick( View dialogView ) {
+		EditText editViewPassword = (EditText) dialogView.findViewById( R.id.main_dialog_setup_password_password );
+		String userPassword = editViewPassword.getText().toString();
+		
+		loadDatabase();
+		
+		boolean success = false;
+		try {
+			success = cipher.setup( userPassword, algorithm );
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+		
+		if ( success ) {
+			// Load the database
+			try {
+				cipher.load( userPassword, algorithm );
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (NoSuchAlgorithmException e) {
+				e.printStackTrace();
+			} catch (KeyNotFoundException e) {
+				e.printStackTrace();
+			}
+			setDatabaseUnlocked( true );
+			
+			Intent passwordListIntent = new Intent( context, PasswordListActivity.class );
+			startActivityForResult( passwordListIntent, INTENT_PASSWORD_LIST );
+		} else {
+			// TODO: Show error
+		}
+	}
+
+	public void dialogSetupPasswordRequestOnButtonClickUnlock( View dialogView ) {
+		
+		EditText editViewPassword = (EditText) dialogView.findViewById( R.id.main_dialog_password_request_password );
+		String userPassword = editViewPassword.getText().toString();
+		
+		loadDatabase();
+		
+		// Load the database with password
+		boolean success = false;
+		try {
+			success = cipher.load( userPassword, algorithm );
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		} catch (KeyNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		if ( success ) {
+			setDatabaseUnlocked( true );
+			
+			Intent passwordListIntent = new Intent( context, PasswordListActivity.class );
+			startActivityForResult( passwordListIntent, INTENT_PASSWORD_LIST );
+		} else {
+			// TODO: Do not close request dialog or restart
+			showDialogRequestPassword( true );
+		}
+	}
+
+	public void dialogSetupOnButtonClickBrowse( View dialogView ) {
+		Intent intent = new Intent( getBaseContext(), FileDialog.class );
+        intent.putExtra( FileDialog.START_PATH, "/" );
+        intent.putExtra( FileDialog.CAN_SELECT_DIR, false );
+        intent.putExtra( FileDialog.SELECTION_MODE, FileDialogSelectionMode.MODE_OPEN );
+        intent.putExtra( FileDialog.FORMAT_FILTER, new String[] { Database.DATABASE_FILE_EXTENSION } );
+        startActivityForResult( intent, INTENT_BROWSE_FILE );
+	}
+	
+	public void dialogSetupOnButtonClickCreate(View dialogView) {
+		showDialogSetupPassword();
 	}
 
 }

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<resources>
+    <string name="file_browser_location">Location</string>
+    <string name="file_browser_cant_read_folder">folder can\'t be read!</string>
+    <string name="file_browser_nnew">New</string>
+    <string name="file_browser_select">Select</string>
+    <string name="file_browser_file_name">File name:</string>
+    <string name="file_browser_no_data">No Data</string>
+    <string name="file_browser_err">Error</string>
+    
+    <color name="file_browser_gray">#ffff0000</color>
+</resources>

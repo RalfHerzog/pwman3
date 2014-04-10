@@ -94,7 +94,7 @@ public class PWManContentNode {
 		String tags = databaseRow.substring( startPos + NODE_TAGS.length() );
 		
 		ArrayList<String> tagList = new ArrayList<String>();
-		while( tags.length() > 0 ) {
+		while( tags.length() > NODE_TAG.length() ) {
 			tags = tags.substring( NODE_TAG.length() );
 			
 			int endPos = tags.indexOf( NODE_TAG_END );
